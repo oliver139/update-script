@@ -12,3 +12,6 @@ dist
 
 # Cache
 .eslintcache
+
+# Misc
+src/lab.ts

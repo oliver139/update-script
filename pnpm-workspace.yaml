@@ -1,2 +1,5 @@
 packages:
-  - "fixtures/*"
+  - fixtures/*
+
+overrides:
+  '@oliver139/update-script': 'link:'

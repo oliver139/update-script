@@ -2,50 +2,64 @@
   "name": "@oliver139/update-script",
   "type": "module",
   "version": "0.0.1",
-  "packageManager": "pnpm@10.6.5",
+  "packageManager": "pnpm@10.10.0",
   "description": "A node script for updating several packages in my Mac",
-  "author": "Oliver Mak",
+  "author": "Oliver Mak <oliver139.working@gmail.com> (https://github.com/oliver139)",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/oliver139/update-script"
   },
-  "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "update",
+    "cli"
+  ],
+  "bin": {
+    "my-update": "./bin/index.js"
+  },
   "files": [
     "bin"
   ],
   "scripts": {
     "initialize": "rimraf .git && git init && git add . && git commit -m 'Initialize project'",
-    "build": "rollup --config=rollup.config.ts --configPlugin rollup-plugin-esbuild",
-    "lint": "eslint . --cache --fix",
-    "lint:check": "eslint . --cache",
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "lint": "eslint --cache",
+    "lint:fix": "eslint --cache --fix",
     "lint:inspect": "eslint --inspect-config",
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts",
     "prepare": "simple-git-hooks",
-    "prepack": "nr build",
+    "prerelease": "nr build && git add ./bin",
     "release": "bumpp && pnpm publish",
     "analyze": "nlx node-modules-inspector"
   },
+  "dependencies": {
+    "@commander-js/extra-typings": "^13.1.0",
+    "ansis": "^3.17.0",
+    "command-exists": "^1.2.9",
+    "commander": "^13.1.0",
+    "log-update": "^6.1.0",
+    "yesno": "^0.4.0"
+  },
   "devDependencies": {
     "@antfu/ni": "^24.3.0",
-    "@oliver139/eslint-config": "^2.1.1",
-    "@rollup/plugin-json": "^6.1.0",
+    "@oliver139/eslint-config": "^2.5.0",
     "@tsconfig/recommended": "1.0.8",
-    "@types/node": "^22.13.11",
+    "@types/command-exists": "^1.2.3",
+    "@types/node": "^22.14.1",
     "bumpp": "^10.1.0",
-    "eslint": "^9.22.0",
-    "lint-staged": "^15.5.0",
+    "eslint": "^9.25.1",
+    "lint-staged": "^15.5.1",
     "rimraf": "^6.0.1",
-    "rollup": "^4.36.0",
-    "rollup-plugin-delete": "^3.0.1",
-    "rollup-plugin-dts": "^6.2.1",
-    "rollup-plugin-esbuild": "^6.2.1",
     "simple-git-hooks": "^2.12.1",
     "tsconfig-paths": "^4.2.0",
     "tslib": "^2.8.1",
+    "tsup": "^8.4.0",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"

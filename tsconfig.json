@@ -1,21 +1,25 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "rootDir": "src",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
 
     "paths": {
       "@/*": ["./src/*"]
     },
+    "resolveJsonModule": true,
     "strict": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
 
     "declaration": true,
+    "noEmit": true,
     "sourceMap": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
     "src",
