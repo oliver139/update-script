@@ -7,7 +7,7 @@ import c from 'ansis'
 import logUpdate from 'log-update'
 import yesno from 'yesno'
 import { version } from '../package.json'
-import { omzUpdate } from './updates'
+import { homebrewUpdate, omzUpdate, pnpmUpdate } from './updates'
 import { isCmdExists, newSection } from './utils'
 
 // #region : Read the command
@@ -40,8 +40,8 @@ interface cmdInfo {
 }
 const cmds: Record<string, cmdInfo> = {
   'oh-my-zsh': { check: 'omz version', update: omzUpdate },
-  // 'homebrew': { check: 'brew', update: homebrewUpdate },
-  // 'pnpm': { check: 'pnpm', update: pnpmUpdate },
+  'homebrew': { check: 'brew', update: homebrewUpdate },
+  'pnpm': { check: 'pnpm', update: pnpmUpdate },
 }
 
 const cmdsCount = Object.keys(cmds).length
