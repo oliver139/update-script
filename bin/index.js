@@ -50,9 +50,21 @@ function newSection(name, lineSpace = ["BEFORE"]) {
   }
 }
 
+// src/updates/homebrew.ts
+async function homebrewUpdate() {
+  await execZsh("brew update");
+}
+
 // src/updates/omz.ts
 async function omzUpdate() {
   await execZsh("omz update");
+}
+
+// src/updates/pnpm.ts
+async function pnpmUpdate() {
+  const output = JSON.parse(await execZsh(`pnpm list -g --json`));
+  const deps = Object.keys(output[0].dependencies);
+  await execZsh(`pnpm self-update && pnpm add -g ${deps.join(" ")}`);
 }
 
 // src/index.ts
@@ -63,9 +75,9 @@ update-script v${version}`));
 console.log(c2.bold.blueBright("========================================="));
 newSection("Check for commands availability");
 var cmds = {
-  "oh-my-zsh": { check: "omz version", update: omzUpdate }
-  // 'homebrew': { check: 'brew', update: homebrewUpdate },
-  // 'pnpm': { check: 'pnpm', update: pnpmUpdate },
+  "oh-my-zsh": { check: "omz version", update: omzUpdate },
+  "homebrew": { check: "brew", update: homebrewUpdate },
+  "pnpm": { check: "pnpm", update: pnpmUpdate }
 };
 var cmdsCount = Object.keys(cmds).length;
 var maxCmdLength = Object.keys(cmds).reduce((result, cmd) => Math.max(result, cmd.length), 0);
