@@ -1,25 +1,28 @@
 #!/usr/bin/env node
-import { exit } from 'node:process'
+import fs from 'node:fs'
+import { join as pathJoin } from 'node:path'
+import { env, exit } from 'node:process'
 import { Command } from '@commander-js/extra-typings'
 import c from 'ansis'
 import logUpdate from 'log-update'
 import yesno from 'yesno'
 import { version } from '../package.json'
-import { homebrewUpdate, omzUpdate, pnpmUpdate } from './updates'
+import { omzUpdate } from './updates'
 import { isCmdExists, newSection } from './utils'
 
 // #region : Read the command
 const program = new Command()
   .name('my-update')
   .option('-y, --yes', 'Skip confirmation')
-  // .option('-d, --debug', 'Enable debug mode')
+  .option('-l, --log [dir]', 'Log the update result to a file inside <dir>')
+  .option('-p, --prefix <string>', 'The prefix of the file name', 'update_')
   .version(version, '-v, --version', 'Show version')
   .helpOption('-h, --help', 'Show help')
   .showHelpAfterError()
-program.parse()
-// #endregion
+  .parse()
 
 const options = program.opts()
+// #endregion
 
 // #region : Header
 console.log(c.bold.blueBright(`\nupdate-script v${version}`))
@@ -37,8 +40,8 @@ interface cmdInfo {
 }
 const cmds: Record<string, cmdInfo> = {
   'oh-my-zsh': { check: 'omz version', update: omzUpdate },
-  'homebrew': { check: 'brew', update: homebrewUpdate },
-  'pnpm': { check: 'pnpm', update: pnpmUpdate },
+  // 'homebrew': { check: 'brew', update: homebrewUpdate },
+  // 'pnpm': { check: 'pnpm', update: pnpmUpdate },
 }
 
 const cmdsCount = Object.keys(cmds).length
@@ -83,6 +86,7 @@ if (!options.yes) {
 newSection('Start Update')
 const frames = ['-', '\\', '|', '/']
 let index = 0
+const logResult: string[] = []
 function updatingMsg() {
   const frame = frames[index = ++index % frames.length]
   logUpdate(Object.entries(cmds).map(([cmdName, { state }]) => {
@@ -92,15 +96,27 @@ function updatingMsg() {
 const updateLogId = setInterval(updatingMsg, 250)
 let successResCount = 0
 updatingMsg()
-await Promise.allSettled(Object.values(cmds).map(({ update: updateCmd }, index) => updateCmd().then(() => {
+await Promise.allSettled(Object.entries(cmds).map(([cmdName, { update: updateCmd }], index) => updateCmd().then(() => {
   successResCount++
   Object.values(cmds)[index].state = true
+  logResult.push(`Update ${cmdName} - OK`)
 }).catch(() => {
   Object.values(cmds)[index].state = false
+  logResult.push(`Update ${cmdName} - Fail`)
 })))
 clearInterval(updateLogId)
 updatingMsg()
 logUpdate.done()
+// #endregion
+
+// #region : Log to file if needed
+if (options.log) {
+  const date = (new Date()).toISOString().split('T')[0].replaceAll('-', '')
+  const dir = options.log === true ? `${env.HOME}/my-update-log/` : options.log
+  const fileName = `${options.prefix}${date}.txt`
+  await fs.promises.mkdir(dir, { recursive: true })
+  await fs.promises.writeFile(pathJoin(dir, fileName), logResult.join('\n'))
+}
 // #endregion
 
 // #region : Update Done
@@ -117,4 +133,6 @@ if (successResCount === 0) {
   console.log(c.bold.yellow`Update Partly Success`)
   console.log(c.bold.yellow('-----------------------------------------'))
 }
+
+exit(0)
 // #endregion
