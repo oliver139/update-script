@@ -24,7 +24,6 @@
     "bin"
   ],
   "scripts": {
-    "initialize": "rimraf .git && git init && git add . && git commit -m 'Initialize project'",
     "build": "tsup",
     "watch": "tsup --watch",
     "lint": "eslint --cache",
@@ -32,7 +31,7 @@
     "lint:inspect": "eslint --inspect-config",
     "start": "tsx src/index.ts",
     "prepare": "simple-git-hooks",
-    "prerelease": "nr build && git add ./bin",
+    "prepack": "nr build",
     "release": "bumpp && pnpm publish",
     "analyze": "nlx node-modules-inspector"
   },
