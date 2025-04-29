@@ -1,7 +1,7 @@
 {
   "name": "@oliver139/update-script",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "packageManager": "pnpm@10.10.0",
   "description": "A node script for updating several packages in my Mac",
   "author": "Oliver Mak <oliver139.working@gmail.com> (https://github.com/oliver139)",
