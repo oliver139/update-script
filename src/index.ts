@@ -2,8 +2,8 @@
 import fs from 'node:fs'
 import { join as pathJoin } from 'node:path'
 import { env, exit } from 'node:process'
-import { Command } from '@commander-js/extra-typings'
 import c from 'ansis'
+import cac from 'cac'
 import logUpdate from 'log-update'
 import yesno from 'yesno'
 import { version } from '../package.json'
@@ -11,17 +11,20 @@ import { homebrewUpdate, omzUpdate, pnpmUpdate } from './updates'
 import { isCmdExists, newSection } from './utils'
 
 // #region : Read the command
-const program = new Command()
-  .name('my-update')
+const cli = cac('my-update')
+cli
   .option('-y, --yes', 'Skip confirmation')
   .option('-l, --log [dir]', 'Log the update result to a file inside <dir>')
-  .option('-p, --prefix <string>', 'The prefix of the file name', 'update_')
-  .version(version, '-v, --version', 'Show version')
-  .helpOption('-h, --help', 'Show help')
-  .showHelpAfterError()
-  .parse()
+  .option('-p, --prefix <string>', 'The prefix of the file name', { default: 'update_' })
+  .version(version)
+  .help()
 
-const options = program.opts()
+const result = cli.parse()
+
+const options = result.options
+if (options.v || options.h) {
+  exit(0)
+}
 // #endregion
 
 // #region : Header

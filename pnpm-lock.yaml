@@ -17,6 +17,9 @@ importers:
       ansis:
         specifier: ^3.17.0
         version: 3.17.0
+      cac:
+        specifier: ^6.7.14
+        version: 6.7.14
       command-exists:
         specifier: ^1.2.9
         version: 1.2.9

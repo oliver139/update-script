@@ -38,6 +38,7 @@
   "dependencies": {
     "@commander-js/extra-typings": "^13.1.0",
     "ansis": "^3.17.0",
+    "cac": "^6.7.14",
     "command-exists": "^1.2.9",
     "commander": "^13.1.0",
     "log-update": "^6.1.0",
